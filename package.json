@@ -5,7 +5,8 @@
   "main": "server.js",
   "author": "Scotch",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha --exit"
   },
   "dependencies": {
     "body-parser": "^1.4.3",
