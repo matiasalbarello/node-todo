@@ -50,25 +50,6 @@ describe("Todo App", function () {
               .end(done);
               
         });
-        var idInserted;
-        before(function(done){
-            let rNum = Math.floor(Math.random()*1000)
-            
-            // First I insert an item and retrieve it
-            request(app)
-              .post("/api/todos")
-              .send({"text": `Test todo api ${rNum}`})
-              .end(function(){
-                request(app)
-                  .get("/api/todos")              
-                  .expect(function(res) {                            
-                    let insertedItem = res.body[res.body.length - 1];
-                    idInserted = { id: insertedItem.id };
-                  })
-                  .expect(200)
-                  .end(done);
-                });
-        })
 
         it("DELETES Todos-api", function(done) {
             request(app)
