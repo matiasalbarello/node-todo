@@ -1,7 +1,5 @@
 var request = require('supertest');
-var expect = require('chai').expect;
 var app = require('../server');
-var todo = require('../app/routes').todo;
 
 describe("Todo App", function () {    
 
@@ -35,11 +33,7 @@ describe("Todo App", function () {
               .post("/api/todos")
               .send({"text":"Test todo api"})
               .set('Accept', 'application/json')
-              .expect('Content-Type', /json/)
-              /*.expect(200, {
-                //id: 'some fixed id',
-                text: 'Test todo api'
-              }, done);*/
+              .expect('Content-Type', /json/)        
               .expect(function(res) {                            
                   let insertedItem = res.body[res.body.length - 1];
                   res.body = { text: insertedItem.text };
@@ -59,8 +53,7 @@ describe("Todo App", function () {
                 request(app)
                     .del('/api/todos/' + res.body[res.body.length - 1]._id)
                     .expect(200)
-                    .end(function(err, res){
-                        console.log(res.body[res.body.length - 1]);
+                    .end(function(err, res){                        
                         done();
                     });
             });
