@@ -22,7 +22,6 @@ module.exports = function (app) {
     });
 
     app.get('/api/todos/:text', (req, res) => {
-        console.log(req.params.text)
         Todo.find({
             'text': req.params.text
         }, (err, todo) => {
