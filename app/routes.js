@@ -21,6 +21,17 @@ module.exports = function (app) {
         getTodos(res);
     });
 
+    app.get('/api/todos/:text', (req, res) => {
+        console.log(req.params.text)
+        Todo.find({
+            'text': req.params.text
+        }, (err, todo) => {
+            if (err)
+                res.send(err);
+            res.json(todo);
+        });
+    })
+
     // create todo and send back all todos after creation
     app.post('/api/todos', (req, res) => {
 
@@ -30,8 +41,8 @@ module.exports = function (app) {
             done: false
         }, (err, todo) => {
             if (err)
-                res.send(err);
-
+                res.send(err);            
+            
             // get and return all the todos after you create another
             getTodos(res);
         });
