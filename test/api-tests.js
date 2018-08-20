@@ -1,7 +1,14 @@
 var request = require('supertest');
 var app = require('../server');
+var Todo = require('../app/models/todo');
 
 describe("Todo App", function () {    
+
+    this.beforeAll(function(){
+        Todo.remove({},function(){
+            console.log("Cleaning DB before test");
+        })
+    });
 
     it("Loads the home page", function(done) {
         request(app).get("/").expect(200).end(done);
@@ -23,6 +30,25 @@ describe("Todo App", function () {
                 })
                 .expect(200, {
                     text:  `Test todo api ${rNum}`
+                })
+                .end(done);
+              });
+        });
+
+        it("GETS a Todo from the API", function(done) {
+            let rNum = Math.floor(Math.random()*1000)
+            request(app)
+              .post("/api/todos")
+              .send({"text": `todo${rNum}`})
+              .end(function(){
+                request(app)
+                .get(`/api/todos/todo${rNum}`)
+                .expect(function(res) {
+                    let insertedItem = res.body[res.body.length - 1];
+                    res.body = { text: insertedItem.text };
+                })
+                .expect(200, {
+                    text:  `todo${rNum}`
                 })
                 .end(done);
               });
