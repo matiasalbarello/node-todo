@@ -7,7 +7,15 @@ describe("Todo App", function () {
     this.beforeAll(function(){
         Todo.remove({},function(){
             console.log("Cleaning DB before test");
-        })
+        });
+        Todo.create({
+            text: "ONE",
+            done: false
+        });
+        Todo.create({
+            text: "TWO",
+            done: false
+        });
     });
 
     it("Loads the home page", function(done) {
@@ -15,7 +23,6 @@ describe("Todo App", function () {
     });
 
     describe("Todos API", function () {
-
         it("GETS Todos-api", function(done) {
             let rNum = Math.floor(Math.random()*1000)
             request(app)
@@ -36,22 +43,16 @@ describe("Todo App", function () {
         });
 
         it("GETS a Todo from the API", function(done) {
-            let rNum = Math.floor(Math.random()*1000)
             request(app)
-              .post("/api/todos")
-              .send({"text": `todo${rNum}`})
-              .end(function(){
-                request(app)
-                .get(`/api/todos/todo${rNum}`)
+            .get(`/api/todos/ONE`)
                 .expect(function(res) {
                     let insertedItem = res.body[res.body.length - 1];
                     res.body = { text: insertedItem.text };
                 })
                 .expect(200, {
-                    text:  `todo${rNum}`
+                    text: "ONE"
                 })
                 .end(done);
-              });
         });
 
         it("POSTS Todos-api", function(done) {
@@ -68,18 +69,17 @@ describe("Todo App", function () {
                   text: 'Test todo api'
               })
               .end(done);
-              
         });
 
         it("DELETES Todos-api", function(done) {
-            request(app)
-            .post('/api/todos')
-            .send({text:'test-add-todo'})
-            .end(function(err, res) {                                
+            Todo.find({text: "TWO"}, (err,todos) => {
+                if (err)
+                    done(err);
+                let todo_id = todos[0]._id;
                 request(app)
-                    .del('/api/todos/' + res.body[res.body.length - 1]._id)
+                    .del('/api/todos/' + todo_id)
                     .expect(200)
-                    .end(function(err, res){                        
+                    .end(function(err, res){
                         done();
                     });
             });
